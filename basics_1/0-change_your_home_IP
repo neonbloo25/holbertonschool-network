@@ -3,12 +3,12 @@
 
 HOSTS_FILE="/etc/hosts"
 
-# Backup original
+# Backup the original /etc/hosts
 sudo cp "$HOSTS_FILE" "${HOSTS_FILE}.bak"
 
-# Remove only *specific lines* containing 'localhost' or 'facebook.com'
-# Use a temporary file to avoid sed -i issues
-TMP_FILE=$(mktemp)
+# Remove existing entries for localhost and facebook.com
+sudo grep -vE '\slocalhost\b|\sfacebook\.com\b' "$HOSTS_FILE" | sudo tee "$HOSTS_FILE" > /dev/null
 
-# Keep all lines EXCEPT ones with "localhost" or "facebook.com"
-sudo grep -vE '(^|\s)localhost(\s|$)|(^|\s)facebook\.com(\
+# Append new mappings
+echo "127.0.0.2 localhost" | sudo tee -a "$HOSTS_FILE" > /dev/null
+echo "8.8.8.8 facebook.com" | sudo tee -a "$HOSTS_FILE" > /dev/null
